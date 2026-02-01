@@ -1,0 +1,45 @@
+[package]
+name = "litesql-ha"
+version = "1.0.0"
+edition = "2021"
+authors = ["LiteSQL <contact@litesql.io>"]
+description = "High-performance Rust client for SQLite HA with built-in replication and failover support"
+license = "Apache-2.0"
+repository = "https://github.com/litesql/rust-ha"
+keywords = ["sqlite", "ha", "high-availability", "replication", "database", "grpc"]
+categories = ["database"]
+readme = "README.md"
+
+[dependencies]
+# gRPC and protobuf
+tonic = "0.12"
+prost = "0.13"
+prost-types = "0.13"
+
+# Async runtime
+tokio = { version = "1.40", features = ["full"] }
+tokio-stream = "0.1"
+
+# SQLite for embedded replicas
+rusqlite = { version = "0.32", features = ["bundled"] }
+
+# NATS for replication
+async-nats = "0.37"
+
+# Utilities
+thiserror = "2.0"
+url = "2.5"
+tracing = "0.1"
+parking_lot = "0.12"
+dashmap = "6.1"
+
+[build-dependencies]
+tonic-build = "0.12"
+
+[dev-dependencies]
+tokio-test = "0.4"
+tempfile = "3.14"
+
+[[example]]
+name = "basic"
+path = "examples/basic.rs"

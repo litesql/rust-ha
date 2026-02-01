@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package sql.v1;
+
+import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
+
+service DatabaseService {
+  rpc Query(stream QueryRequest) returns (stream QueryResponse);
+  rpc Download(DownloadRequest) returns (stream DownloadResponse);
+  rpc LatestSnapshot(LatestSnapshotRequest) returns (stream LatestSnapshotResponse);
+  rpc ReplicationIDs(google.protobuf.Empty) returns (ReplicationIDsResponse);
+}
+
+enum QueryType {
+  QUERY_TYPE_UNSPECIFIED = 0;
+  QUERY_TYPE_EXEC_QUERY = 1;
+  QUERY_TYPE_EXEC_UPDATE = 2;
+}
+
+message QueryRequest {
+  string replication_id = 1;
+  string sql = 2;
+  QueryType type = 3;
+  repeated NamedValue params = 4;
+}
+
+message NamedValue {
+  string name = 1;
+  int64 ordinal = 2;
+  google.protobuf.Any value = 3;
+}
+
+message QueryResponse {
+  ResultSet result_set = 1;
+  int64 rows_affected = 2;
+  int64 txseq = 3;
+  string error = 4;
+}
+
+message ResultSet {
+  repeated string columns = 1;
+  repeated Row rows = 2;
+}
+
+message Row {
+  repeated google.protobuf.Any values = 1;
+}
+
+message DownloadRequest {
+  string replication_id = 1;
+}
+
+message DownloadResponse {
+  bytes data = 1;
+}
+
+message LatestSnapshotRequest {
+  string replication_id = 1;
+}
+
+message LatestSnapshotResponse {
+  bytes data = 1;
+}
+
+message ReplicationIDsResponse {
+  repeated string replication_id = 1;
+}
